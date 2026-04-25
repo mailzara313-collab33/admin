@@ -1,9 +1,54 @@
+# ── Uploaded user content (large, not source code) ──
 uploads/*
+
+# ── Composer/NPM dependencies ──
 vendor/*
+node_modules/
+
+# ── Application runtime logs ──
 application/logs/*
+*.log
+
+# ── Theme demo/image assets ──
 assets/front_end/modern/demo/*
 assets/front_end/modern/images/*
+
+# ── OS / IDE noise ──
 .DS_Store
 /.vscode/
 /dist/
-/node_modules/
+
+# ══════════════════════════════════════════════════════
+# SECURITY — NEVER commit any of the items below
+# ══════════════════════════════════════════════════════
+
+# Environment files with real credentials
+.env
+.env.*
+!.env.example
+
+# CodeIgniter config files that hold live secrets
+application/config/database.php
+application/config/constants.php
+
+# Database dumps (use secure backup storage, not git)
+*.sql
+
+# PHP/Composer binaries
+*.phar
+
+# Installer wizard (remove from server post-install, never in git)
+install/
+
+# Backup / scratch files accidentally left at web root
+backup.php
+default.php
+
+# Payment gateway log files
+paypal_ipn.log
+webhook.log
+
+# IDE / editor configs
+*.swp
+*.swo
+.idea/
