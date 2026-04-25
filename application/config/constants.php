@@ -1,30 +1,31 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-defined('JWT_SECRET_KEY') or define('JWT_SECRET_KEY', '68f05dec6014f68e760c5c5fa3e31bcf391a2e10');
+
 /*
-|--------------------------------------------------------------------------
-| Display Debug backtrace
-|--------------------------------------------------------------------------
-|
-| If set to TRUE, a backtrace will be displayed along with php errors. If
-| error_reporting is disabled, the backtrace will not display, regardless
-| of this setting
-|
+| JWT Secret Key — loaded from environment, never hardcoded.
+| Generate a new key:  openssl rand -hex 32
+| Set via cPanel > PHP Environment Variables or server .env file.
 */
-defined('SHOW_DEBUG_BACKTRACE') or define('SHOW_DEBUG_BACKTRACE', TRUE);
+defined('JWT_SECRET_KEY') or define(
+    'JWT_SECRET_KEY',
+    getenv('JWT_SECRET_KEY') ?: ($_ENV['JWT_SECRET_KEY'] ?? '')
+);
+
+if (empty(JWT_SECRET_KEY)) {
+    log_message('error', 'CRITICAL: JWT_SECRET_KEY environment variable is not set.');
+    show_error('Server configuration error. Please contact the administrator.', 500);
+}
+
+/*
+| Debug backtrace — disabled in all environments for security.
+| Stack traces leak file paths, line numbers, and internal logic.
+*/
+defined('SHOW_DEBUG_BACKTRACE') or define('SHOW_DEBUG_BACKTRACE', FALSE);
 
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes
 |--------------------------------------------------------------------------
-|
-| These prefs are used when checking and setting modes when working
-| with the file system.  The defaults are fine on servers with proper
-| security, but you may wish (or even need) to change the values in
-| certain environments (Apache running a separate process for each
-| user, PHP under CGI with Apache suEXEC, etc.).  Octal values should
-| always be used to set the mode correctly.
-|
 */
 defined('FILE_READ_MODE')  or define('FILE_READ_MODE', 0644);
 defined('FILE_WRITE_MODE') or define('FILE_WRITE_MODE', 0666);
@@ -35,65 +36,39 @@ defined('DIR_WRITE_MODE')  or define('DIR_WRITE_MODE', 0755);
 |--------------------------------------------------------------------------
 | File Stream Modes
 |--------------------------------------------------------------------------
-|
-| These modes are used when working with fopen()/popen()
-|
 */
-defined('FOPEN_READ')                           or define('FOPEN_READ', 'rb');
-defined('FOPEN_READ_WRITE')                     or define('FOPEN_READ_WRITE', 'r+b');
-defined('FOPEN_WRITE_CREATE_DESTRUCTIVE')       or define('FOPEN_WRITE_CREATE_DESTRUCTIVE', 'wb'); // truncates existing file data, use with care
-defined('FOPEN_READ_WRITE_CREATE_DESTRUCTIVE')  or define('FOPEN_READ_WRITE_CREATE_DESTRUCTIVE', 'w+b'); // truncates existing file data, use with care
-defined('FOPEN_WRITE_CREATE')                   or define('FOPEN_WRITE_CREATE', 'ab');
-defined('FOPEN_READ_WRITE_CREATE')              or define('FOPEN_READ_WRITE_CREATE', 'a+b');
-defined('FOPEN_WRITE_CREATE_STRICT')            or define('FOPEN_WRITE_CREATE_STRICT', 'xb');
-defined('FOPEN_READ_WRITE_CREATE_STRICT')       or define('FOPEN_READ_WRITE_CREATE_STRICT', 'x+b');
+defined('FOPEN_READ')                          or define('FOPEN_READ', 'rb');
+defined('FOPEN_READ_WRITE')                    or define('FOPEN_READ_WRITE', 'r+b');
+defined('FOPEN_WRITE_CREATE_DESTRUCTIVE')      or define('FOPEN_WRITE_CREATE_DESTRUCTIVE', 'wb');
+defined('FOPEN_READ_WRITE_CREATE_DESTRUCTIVE') or define('FOPEN_READ_WRITE_CREATE_DESTRUCTIVE', 'w+b');
+defined('FOPEN_WRITE_CREATE')                  or define('FOPEN_WRITE_CREATE', 'ab');
+defined('FOPEN_READ_WRITE_CREATE')             or define('FOPEN_READ_WRITE_CREATE', 'a+b');
+defined('FOPEN_WRITE_CREATE_STRICT')           or define('FOPEN_WRITE_CREATE_STRICT', 'xb');
+defined('FOPEN_READ_WRITE_CREATE_STRICT')      or define('FOPEN_READ_WRITE_CREATE_STRICT', 'x+b');
 
 /*
 |--------------------------------------------------------------------------
 | Exit Status Codes
 |--------------------------------------------------------------------------
-|
-| Used to indicate the conditions under which the script is exit()ing.
-| While there is no universal standard for error codes, there are some
-| broad conventions.  Three such conventions are mentioned below, for
-| those who wish to make use of them.  The CodeIgniter defaults were
-| chosen for the least overlap with these conventions, while still
-| leaving room for others to be defined in future versions and user
-| applications.
-|
-| The three main conventions used for determining exit status codes
-| are as follows:
-|
-|    Standard C/C++ Library (stdlibc):
-|       http://www.gnu.org/software/libc/manual/html_node/Exit-Status.html
-|       (This link also contains other GNU-specific conventions)
-|    BSD sysexits.h:
-|       http://www.gsp.com/cgi-bin/man.cgi?section=3&topic=sysexits
-|    Bash scripting:
-|       http://tldp.org/LDP/abs/html/exitcodes.html
-|
 */
-defined('EXIT_SUCCESS')        or define('EXIT_SUCCESS', 0); // no errors
-defined('EXIT_ERROR')          or define('EXIT_ERROR', 1); // generic error
-defined('EXIT_CONFIG')         or define('EXIT_CONFIG', 3); // configuration error
-defined('EXIT_UNKNOWN_FILE')   or define('EXIT_UNKNOWN_FILE', 4); // file not found
-defined('EXIT_UNKNOWN_CLASS')  or define('EXIT_UNKNOWN_CLASS', 5); // unknown class
-defined('EXIT_UNKNOWN_METHOD') or define('EXIT_UNKNOWN_METHOD', 6); // unknown class member
-defined('EXIT_USER_INPUT')     or define('EXIT_USER_INPUT', 7); // invalid user input
-defined('EXIT_DATABASE')       or define('EXIT_DATABASE', 8); // database error
-defined('EXIT__AUTO_MIN')      or define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
-defined('EXIT__AUTO_MAX')      or define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+defined('EXIT_SUCCESS')      or define('EXIT_SUCCESS', 0);
+defined('EXIT_ERROR')        or define('EXIT_ERROR', 1);
+defined('EXIT_CONFIG')       or define('EXIT_CONFIG', 3);
+defined('EXIT_UNKNOWN_FILE') or define('EXIT_UNKNOWN_FILE', 4);
+defined('EXIT_UNKNOWN_CLASS')  or define('EXIT_UNKNOWN_CLASS', 5);
+defined('EXIT_UNKNOWN_METHOD') or define('EXIT_UNKNOWN_METHOD', 6);
+defined('EXIT_USER_INPUT')   or define('EXIT_USER_INPUT', 7);
+defined('EXIT_DATABASE')     or define('EXIT_DATABASE', 8);
+defined('EXIT__AUTO_MIN')    or define('EXIT__AUTO_MIN', 9);
+defined('EXIT__AUTO_MAX')    or define('EXIT__AUTO_MAX', 125);
 
-// Custom Constant Variables
+// Application path constants
 define('FORMS', 'forms/');
-
-// define('USER_DATA',$allow_modification);
-// define('ALLOW_MODIFICATION',0);
-define('IS_ALLOWED_MODIFICATION',1);
-define('CI_DEBUG',False);
+define('IS_ALLOWED_MODIFICATION', 1);
+define('CI_DEBUG', FALSE);
 define('DEMO_VERSION_MSG', 'Modification in demo version is not allowed');
 define('SEMI_DEMO_MODE', 1);
-define('APP_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']));
+define('APP_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']));
 define('SEMI_DEMO_MODE_MSG', 'Modification in semi demo version is not allowed');
 define('TABLES', 'tables/');
 define('VIEW', 'view/');
@@ -122,7 +97,7 @@ define('RETURN_IMAGES', 'uploads/return_images/');
 define('APP_CODE', '34108271');
 define('WEB_CODE', '34380052');
 
-//Thumbnail paths
+// Thumbnail paths
 define('THUMB_MD', 'thumb-md/');
 define('THUMB_SM', 'thumb-sm/');
 define('CROPPED_MD', 'cropped-md/');
@@ -130,23 +105,21 @@ define('CROPPED_SM', 'cropped-sm/');
 
 define('PERMISSION_ERROR_MSG', ' You are not authorize to operate on the module ');
 
-// ticket status 
+// Ticket status
 define('PENDING', '1');
 define('OPENED', '2');
 define('RESOLVED', '3');
 define('CLOSED', '4');
 define('REOPEN', '5');
 
-// direct bank transfer
-
 define('BANK_TRANSFER', 'Direct Bank Transfer');
 
-// pincode delivarable type
-
+// Pincode deliverable type
 define('NONE', '0');
 define('ALL', '1');
 define('INCLUDED', '2');
 define('EXCLUDED', '3');
-defined("WORD_LIMIT") || define("WORD_LIMIT", 12);
-defined("DESCRIPTION_WORD_LIMIT") || define("DESCRIPTION_WORD_LIMIT", 150);
-defined("SHORT_DESCRIPTION_WORD_LIMIT") || define("SHORT_DESCRIPTION_WORD_LIMIT", 22);
+
+defined('WORD_LIMIT') || define('WORD_LIMIT', 12);
+defined('DESCRIPTION_WORD_LIMIT') || define('DESCRIPTION_WORD_LIMIT', 150);
+defined('SHORT_DESCRIPTION_WORD_LIMIT') || define('SHORT_DESCRIPTION_WORD_LIMIT', 22);

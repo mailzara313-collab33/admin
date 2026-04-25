@@ -1,9 +1,47 @@
+# -- Uploaded user content (large, not source code) --
 uploads/*
+
+# -- Composer/NPM dependencies --
 vendor/*
+node_modules/
+
+# -- Application runtime logs --
 application/logs/*
+*.log
+
+# -- Theme demo/image assets --
 assets/front_end/modern/demo/*
 assets/front_end/modern/images/*
+
+# -- OS / IDE noise --
 .DS_Store
 /.vscode/
 /dist/
-/node_modules/
+*.swp
+*.swo
+.idea/
+
+# ==============================================================
+# SECURITY — NEVER commit any of the items below
+# ==============================================================
+
+# Environment file with real credentials (commit .env.example instead)
+.env
+.env.*
+!.env.example
+
+# Database dumps — use secure backup storage, not git
+*.sql
+
+# PHP/Composer binaries
+*.phar
+
+# Installer wizard — must be deleted from server post-install
+install/
+
+# Scratch/backup files accidentally left at web root
+backup.php
+
+# Payment gateway log files
+paypal_ipn.log
+webhook.log
