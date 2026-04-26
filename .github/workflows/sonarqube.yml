@@ -1,0 +1,21 @@
+# SonarQube ayrı bir sunucu gerektirdiğinden kaldırıldı.
+# Yerine sonarcloud.yml (ücretsiz, bulut tabanlı) kullanılıyor.
+#
+# SonarQube sunucusu kurulursa aşağıdaki adımları takip edin:
+# 1. Settings > Secrets > SONAR_TOKEN ekle
+# 2. Settings > Secrets > SONAR_HOST_URL ekle  
+# 3. sonar.projectKey değerini doldur
+# 4. on: push/pull_request trigger'larını aktif et
+#
+# Şimdilik devre dışı — hiçbir trigger tanımlanmadı.
+name: SonarQube analysis (disabled)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Info
+        run: echo "SonarQube workflow disabled. Use SonarCloud (sonarcloud.yml) instead."

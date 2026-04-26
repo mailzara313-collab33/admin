@@ -1,0 +1,19 @@
+# Fortify enterprise lisansı gerektirdiğinden kaldırıldı.
+# Yerine security-pipeline.yml içindeki Semgrep SAST kullanılıyor.
+# Semgrep: ücretsiz, PHP + OWASP Top 10 + SQL Injection kuralları mevcut.
+#
+# Fortify lisansı edinilirse bu dosya yeniden aktive edilebilir.
+# Gerekli secrets: FOD_TENANT, FOD_USER, FOD_PAT (veya SSC_TOKEN)
+#
+# Şimdilik devre dışı — hiçbir trigger tanımlanmadı.
+name: Fortify AST Scan (disabled)
+
+on:
+  workflow_dispatch: # Sadece manuel tetiklenebilir, otomatik çalışmaz
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Info
+        run: echo "Fortify workflow disabled. Use Semgrep in security-pipeline.yml instead."
